@@ -1,6 +1,10 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+}
+
 android {
     compileSdk 33
+
     defaultConfig {
         applicationId "com.google.system.update"
         minSdk 21
@@ -8,7 +12,15 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    buildTypes {
+        debug {
+            debuggable true
+            minifyEnabled false
+        }
+    }
 }
+
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
 }
