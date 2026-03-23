@@ -19,33 +19,15 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       
-      - name: Setup Android SDK
-        run: |
-          sudo apt update
-          sudo apt install -y wget unzip
-          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
-          unzip commandlinetools-linux-9477386_latest.zip -d $HOME/android-sdk
-          mkdir -p $HOME/android-sdk/cmdline-tools/latest
-          mv $HOME/android-sdk/cmdline-tools/* $HOME/android-sdk/cmdline-tools/latest/
-          echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
-          echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
-      
-      - name: Accept Licenses
-        run: |
-          yes | sdkmanager --licenses
-      
-      - name: Install Build Tools
-        run: |
-          sdkmanager "platforms;android-33" "build-tools;30.0.3"
-      
       - name: Build APK
         run: |
-          chmod +x gradlew 2>/dev/null || true
-          if [ -f "gradlew" ]; then
-            ./gradlew assembleDebug
-          else
-            gradle assembleDebug
+          # إنشاء gradle wrapper إذا لم يكن موجوداً
+          if [ ! -f "gradlew" ]; then
+            echo "Creating gradle wrapper..."
+            gradle wrapper
           fi
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
       
       - name: Upload APK
         uses: actions/upload-artifact@v4
